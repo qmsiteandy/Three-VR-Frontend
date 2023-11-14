@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>360 Panorama Viewer</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+    <!-- import Three.js -->
+    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+<script type="module">
+    
+
+    // create scene
+    var scene = new THREE.Scene();
+
+    // create camera
+    var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    
+    // create renderer
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // create VR sphere
+    var geometry = new THREE.SphereGeometry(500, 60, 40);
+    geometry.scale(-1, 1, 1);  // flip Sphere, be able to see inside
+    var texture = new THREE.TextureLoader().load('predict.jpg');
+    var material = new THREE.MeshBasicMaterial({ map: texture });
+    var sphere = new THREE.Mesh(geometry, material);
+    scene.add(sphere);
+
+    // set camera
+    camera.position.set(0, 0, 0.1);
+
+    // add VR controller, OrbitControls is no within three package
+    import {OrbitControls} from "https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js"
+    var controls = new OrbitControls(camera, renderer.domElement);
+
+    // render
+    function animate() {
+        requestAnimationFrame(animate);
+        // controls.update();
+        renderer.render(scene, camera);
+    }
+
+    // handle window size
+    window.addEventListener('resize', function () {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // start animate loop
+    animate();
+
+</script>
+
+</body>
+</html>
